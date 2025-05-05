@@ -14,13 +14,15 @@ class Entity
 
 public:
     virtual ~Entity();
-    virtual string getId(); 
+    virtual string getId() const; 
 };
 
 class EntityVector
 {
     vector<Entity*> entities;
 public:
+    EntityVector();
+    ~EntityVector();
     void addEntity(Entity* entity);
     bool removeEntity(string id);
     Entity* getEntity(string id);

@@ -7,6 +7,19 @@
 using namespace std;
 
 
+Entity::~Entity() {}
+string Entity::getId() const {return id;}
+
+
+//TODO all methods
+EntityVector::EntityVector() {}
+EntityVector::~EntityVector() {}
+void EntityVector::addEntity(Entity* entity) {entities.push_back(entity);}
+bool EntityVector::removeEntity(string id) {}
+Entity* EntityVector::getEntity(string id) {}
+vector<Entity*>& EntityVector::getAllEntities() {}
+
+
 double GoldClient::calculateCommission(double amount) const {return amount * 0.01;}
 double GoldClient::getMaxTransactionLimit() const {return 10000;}
 string GoldClient::getBenefits() const
