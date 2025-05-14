@@ -10,9 +10,11 @@ enum class TxType { TRANSFER };
 
 class Entity
 {
+protected:
     string id;
 
 public:
+    Entity(const string id);
     virtual ~Entity();
     virtual string getId() const; 
 };
@@ -25,22 +27,37 @@ public:
     ~EntityVector();
     void addEntity(Entity* entity);
     bool removeEntity(const string& id);
-    Entity* getEntity(const string& id);
+    Entity* getEntity(const string& id) const;
     vector<Entity*>& getAllEntities();
 };
 
+
+class Wallet : public Entity
+{
+    double balance;
+    string ownerId;
+public:
+    Wallet(string id, string ownerId, double balance);
+    void deposit(double amount);
+    bool withdraw(double amount);
+    double getBalance() const;
+    string getId() const override;
+};
+
+
 class Client : public Entity
 {
+    
     string name;
     EntityVector wallets;
 public:
     Client(string id, string name);
     virtual ~Client();
     void addWallet(Wallet* wallet);
-    double getTotalNalance();
+    double getTotalBalance();
     virtual double calculateCommission(double amount);
-    virtual double getMaxTransactionLimit();
-    string getId();
+    virtual double getMaxTransactionLimit() const;
+    string getId() const override;
 };
 
 class GoldClient : public Client 
@@ -68,18 +85,6 @@ public:
     double calculateCommission(double amount) const;
     double getMaxTransactionLimit() const;
     string getBenefits() const;
-};
-
-class Wallet : public Entity
-{
-    double balance;
-    string ownerId;
-public:
-    Wallet(string id, string ownerId, double balance);
-    void deposit(double amount);
-    bool withdraw(double amount);
-    double getBalance();
-    string getId();
 };
 
 class Transaction : Entity
