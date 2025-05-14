@@ -31,7 +31,6 @@ public:
     vector<Entity*>& getAllEntities();
 };
 
-
 class Wallet : public Entity
 {
     double balance;
@@ -43,7 +42,6 @@ public:
     double getBalance() const;
     string getId() const override;
 };
-
 
 class Client : public Entity
 {
@@ -96,8 +94,9 @@ class Transaction : Entity
     double commission;
 public:
     Transaction(string id, string senderWalletId, string recipientWalletId, double amount, TxType type, double commission);
-    string getId();
-    string getDetails();
+    ~Transaction();
+    string getId() const override;
+    string getDetails() const;
 };
 
 class TransactionNode
@@ -108,6 +107,12 @@ class TransactionNode
 public:
     TransactionNode(Transaction* data);
     ~TransactionNode();
+    Transaction* getData() const;
+    void setPrevious(TransactionNode *prev);
+    TransactionNode *getPrevious();
+    void setNext(TransactionNode *next);
+    TransactionNode *getNext();
+    friend class TransactionList;
 };
 
 class TransactionList 

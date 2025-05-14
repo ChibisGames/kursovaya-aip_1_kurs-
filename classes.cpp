@@ -76,6 +76,87 @@ string Client::getId() const {return id;}
 
 
 
+Transaction::Transaction(string id, string senderWalletId, string recipientWalletId, double amount, TxType type, double commission):
+    Entity(id) {this->senderWalletId; this->recipientWalletId=recipientWalletId; 
+        this->amount = amount, this->type = type; this->commission = commission;}
+Transaction::~Transaction() {}
+string Transaction::getId() const {return id;}
+string Transaction::getDetails() const {} //TODO: хз, что здесь надо сделать
+
+
+TransactionNode::TransactionNode(Transaction* data) 
+{this->data = data; this->prev = nullptr; this->next = nullptr;}
+TransactionNode::~TransactionNode() {delete data;}
+Transaction* TransactionNode::getData() const {return data;}
+void TransactionNode::setPrevious(TransactionNode *prev) {this->prev = prev;}
+TransactionNode* TransactionNode::getPrevious() {return this->prev;}
+void TransactionNode::setNext(TransactionNode *next) {this->next = next;}
+TransactionNode* TransactionNode::getNext() {return this->next;}
+
+
+TransactionList::TransactionList() {head = nullptr; tail = nullptr; size = 0;}
+TransactionList::~TransactionList() 
+{
+    TransactionNode* current = head;
+    for (int i = 0; i < size; i++)
+    {
+        TransactionNode* next = current->next;
+        delete current;
+        current = next;
+    }
+}
+void TransactionList::addTransaction(Transaction* tx) 
+{
+    TransactionNode* newNode = new TransactionNode(tx);
+    if (!head) {head = tail = newNode;} 
+    else 
+    {
+        tail->next = newNode;
+        newNode->prev = tail;
+        tail = newNode;
+    }
+    size++;
+}
+bool TransactionList::removeTransaction(string id) 
+{
+    TransactionNode* current = head;
+    for (int i = 0; i < size; i++)
+    {
+        if (current->data->getId() == id) 
+        {
+            if (current->prev) current->prev->next = current->next;
+            if (current->next) current->next->prev = current->prev;
+            if (current == head) head = current->next;
+            if (current == tail) tail = current->prev;
+            delete current;
+            size--;
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+Transaction* TransactionList::getTransaction(string id) 
+{
+    TransactionNode* current = head;
+    for (int i = 0; i < size; i++)
+    {
+        if (current->getData()->getId() == id) return current->data;
+        current = current->next;
+    }
+    return nullptr;
+}
+void TransactionList::displayTransactions() 
+{
+    TransactionNode* current = head;
+    for (int i = 0; i < size; i++)
+    {
+        current->data->getDetails();
+        current = current->next;
+    }
+}
+
+
 double GoldClient::calculateCommission(double amount) const {return amount * 0.01;}
 double GoldClient::getMaxTransactionLimit() const {return 10000;}
 string GoldClient::getBenefits() const
