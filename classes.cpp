@@ -11,13 +11,30 @@ Entity::~Entity() {}
 string Entity::getId() const {return id;}
 
 
-//TODO all methods
-EntityVector::EntityVector() {}
-EntityVector::~EntityVector() {}
+EntityVector::EntityVector() {vector<Entity*> entities;}
+EntityVector::~EntityVector() {entities.clear();}
 void EntityVector::addEntity(Entity* entity) {entities.push_back(entity);}
-bool EntityVector::removeEntity(string id) {}
-Entity* EntityVector::getEntity(string id) {}
-vector<Entity*>& EntityVector::getAllEntities() {}
+bool EntityVector::removeEntity(const string& id) 
+{
+    for (auto cursor = entities.cbegin(); cursor != entities.cend(); cursor++) 
+    {
+        if ((*cursor)->getId() == id) 
+        {
+            entities.erase(cursor);
+            return true;
+        }
+    }
+    return false;
+}
+Entity* EntityVector::getEntity(const string& id) 
+{
+    for (const auto& entity : entities) 
+    {
+        if (entity->getId() == id) {return entity;}
+    }
+    return nullptr;
+}
+vector<Entity*>& EntityVector::getAllEntities() {return entities;}
 
 
 double GoldClient::calculateCommission(double amount) const {return amount * 0.01;}

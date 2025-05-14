@@ -24,8 +24,8 @@ public:
     EntityVector();
     ~EntityVector();
     void addEntity(Entity* entity);
-    bool removeEntity(string id);
-    Entity* getEntity(string id);
+    bool removeEntity(const string& id);
+    Entity* getEntity(const string& id);
     vector<Entity*>& getAllEntities();
 };
 
