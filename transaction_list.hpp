@@ -22,4 +22,4 @@ public:
         return head;
     }
 };
-#endif /* transaction_list_hpp */
+#endif 

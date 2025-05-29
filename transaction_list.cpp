@@ -65,15 +65,27 @@ Transaction* TransactionList::getTransaction(const string &id)const{
     return nullptr;
 }
 void TransactionList::displayTransaction() const {
+    cout << "--- Transaction List (" << size << " items) ---\n";
+    
     TransactionNode* current = head;
-    cout << "--- Transactions ---" << endl;
     while (current != nullptr) {
         if (current->data) {
-            cout << current->data->getDetailes() << endl;
+            try {
+                string details = current->data->getDetailes();
+                if (details.empty()) {
+                    cout << "[CORRUPTED DATA]\n";
+                } else {
+                    cout << "• " << details << "\n";
+                }
+            } catch (...) {
+                cout << "[PRINT ERROR]\n";
+            }
+        } else {
+            cout << "[NULL TRANSACTION]\n";
         }
         current = current->next;
     }
-    cout << "--------------------" << endl;
+    cout << "--------------------------------\n";
 }
 int TransactionList::getSize() const {
     return size;

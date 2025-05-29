@@ -35,7 +35,7 @@ bool Blockchain::processTransaction(const string& senderClientId, const string& 
     shared_ptr<Client> receiverClient = findClient(receiverClientId);
 
     if (!senderClient || !receiverClient) {
-        cout << "Ошибка: Клиент-отправитель или клиент-получатель не найден." << endl;
+        cout << "Error: The sender client or recipient client was not found." << endl;
         return false;
     }
 
@@ -43,12 +43,12 @@ bool Blockchain::processTransaction(const string& senderClientId, const string& 
     shared_ptr<Wallet> receiverWallet = findWallet(receiverWalletId, receiverClient.get());
 
     if (!senderWallet || !receiverWallet) {
-        cout << "Ошибка: Кошелек отправителя или получателя не найден." << endl;
+        cout << "Error: The sender's or recipient's wallet was not found." << endl;
         return false;
     }
 
     if (senderWallet->getBalance() < amount) {
-        cout << "Ошибка: Недостаточно средств в кошельке отправителя." << endl;
+        cout << "Mistake: There are insufficient funds in the sender's wallet." << endl;
         return false;
     }
 
@@ -56,12 +56,12 @@ bool Blockchain::processTransaction(const string& senderClientId, const string& 
     double totalDeduction = amount + commission;
 
     if (senderWallet->getBalance() < totalDeduction) {
-        cout << "Ошибка: Недостаточно средств для транзакции и комиссии." << endl;
+        cout << "Mistake: There are not enough funds for the transaction and the commission." << endl;
         return false;
     }
 
     if (amount > senderClient->getMaxTransactionLimit()) {
-        cout << "Ошибка: Сумма транзакции превышает лимит для отправителя." << endl;
+        cout << "Error: The transaction amount exceeds the limit for the sender." << endl;
         return false;
     }
 
@@ -74,14 +74,14 @@ bool Blockchain::processTransaction(const string& senderClientId, const string& 
     receiverWallet->deposit(amount);
     transactions.addTransaction(newTransaction);
 
-    cout << "Транзакция успешно выполнена. ID: " << newTransaction->getId()
-              << ", Сумма: " << amount
-              << ", Комиссия: " << commission << endl;
+    cout << "The transaction was completed successfully. ID: " << newTransaction->getId()
+              << ", Amount: " << amount
+              << ", Commission fee: " << commission << endl;
     return true;
 }
 
 void Blockchain::displayClients() const {
-    cout << "--- Клиенты (отсортировано по общему балансу) ---" << endl;
+    cout << "--- Customers (sorted by total balance) ---" << endl;
     clients.displayInOrder();
     cout << "-----------------------------------------" << endl;
 }
@@ -109,9 +109,9 @@ void Blockchain::saveClientsToFile(const string& filename) const {
             file << "\n";
         }
         file.close();
-        cout << "Данные клиентов сохранены в " << filename << endl;
+        cout << "Customer data is saved in" << filename << endl;
     } else {
-        cerr << "Ошибка открытия файла для записи: " << filename << endl;
+        cerr << "Error opening the file for writing: " << filename << endl;
     }
 }
 
@@ -129,7 +129,7 @@ void Blockchain::loadClientsFromFile(const string& filename) {
             }
 
             if (data.size() < 3) {
-                cerr << "Предупреждение: Неверный формат данных клиента в строке (слишком мало полей): " << line << endl;
+                cerr << "Warning: Incorrect format of the client's data in the row (too few fields): " << line << endl;
                 continue;
             }
 
@@ -154,16 +154,16 @@ void Blockchain::loadClientsFromFile(const string& filename) {
                     shared_ptr<Wallet> wallet = make_shared<Wallet>(walletId, id, balance);
                     client->addWallet(wallet);
                 } else {
-                    cerr << "Предупреждение: Неполные данные кошелька для клиента " << id << " в строке: " << line << endl;
+                    cerr << "Warning: Incomplete wallet data for the client" << id << "in the line: " << line << endl;
                     break;
                 }
             }
             addClient(client);
         }
         file.close();
-        cout << "Данные клиентов загружены из " << filename << endl;
+        cout << "Customer data is downloaded from: " << filename << endl;
     } else {
-        cerr << "Ошибка открытия файла для чтения: " << filename << endl;
+        cerr << "Error opening the file for reading: " << filename << endl;
     }
 }
 
@@ -191,13 +191,13 @@ void Blockchain::loadTransactionsFromFile(const string& filename) {
                 Transaction* transaction = new Transaction(transactionId, senderWalletId, receiverWalletId, amount, type, commission);
                 transactions.addTransaction(transaction);
             } else {
-                cerr << "Предупреждение: Неверный формат данных транзакции в строке: " << line << endl;
+                cerr << "Warning: Incorrect format of the transaction data in the row: " << line << endl;
             }
         }
         inputFile.close();
-        cout << "Данные транзакций загружены из " << filename << endl;
+        cout << "Transaction data is downloaded from: " << filename << endl;
     } else {
-        cerr << "Ошибка открытия файла для чтения: " << filename << endl;
+        cerr << "Error opening the file for reading: " << filename << endl;
     }
 }
 
@@ -215,8 +215,8 @@ void Blockchain::saveTransactionsToFile(const string& filename) const {
             current = current->next;
         }
         outputFile.close();
-        cout << "Данные транзакций сохранены в " << filename << endl;
+        cout << "Transaction data is downloaded to: " << filename << endl;
     } else {
-        cerr << "Ошибка открытия файла для записи: " << filename << endl;
+        cerr << "Error opening the file for writing: " << filename << endl;
     }
 }

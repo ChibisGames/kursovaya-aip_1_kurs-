@@ -5,7 +5,7 @@ using namespace std;
 PlatinumClient::PlatinumClient(string id,string name):Client(id , name){}
 
 double PlatinumClient::calculateCommission(double amount)const{
-    return amount * 0.02; //коммиссия два процента
+    return amount * 0.02; 
 }
 
 double PlatinumClient::getMaxTransactionLimit()const{

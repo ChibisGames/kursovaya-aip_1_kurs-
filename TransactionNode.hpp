@@ -1,10 +1,3 @@
-//
-//  TransactionNode.hpp
-//  курсовая
-//
-//  Created by Ваграм on 5/15/25.
-//
-
 #ifndef TransactionNode_hpp
 #define TransactionNode_hpp
 #include "transaction.hpp"
@@ -18,4 +11,4 @@ public:
     TransactionNode(Transaction* data);
     ~TransactionNode();
 };
-#endif /* TransactionNode_hpp */
+#endif

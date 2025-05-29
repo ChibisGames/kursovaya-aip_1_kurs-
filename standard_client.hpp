@@ -16,4 +16,4 @@ public:
     string getBenefits() const;
     ~StandardClient()override{}
 };
-#endif /* standard_client_hpp */
+#endif 
