@@ -2,7 +2,7 @@
 #define gold_client_hpp
 
 #include <string>
-#include "client (2).hpp"
+#include "client.hpp"
 using namespace std;
 
 class GoldClient : public Client{

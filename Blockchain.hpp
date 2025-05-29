@@ -14,9 +14,9 @@
 
 #include "client_bst.hpp"
 #include "transaction_list.hpp"
-#include "client (2).hpp"
+#include "client.hpp"
 #include "wallet.hpp"
-#include "transaction (2).hpp"
+#include "transaction.hpp"
 #include "gold_client.hpp"
 #include "platinum_client.hpp"
 #include "standard_client.hpp"

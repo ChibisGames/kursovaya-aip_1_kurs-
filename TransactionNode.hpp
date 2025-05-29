@@ -7,7 +7,7 @@
 
 #ifndef TransactionNode_hpp
 #define TransactionNode_hpp
-#include "transaction (2).hpp"
+#include "transaction.hpp"
 using namespace std;
 
 class TransactionNode {

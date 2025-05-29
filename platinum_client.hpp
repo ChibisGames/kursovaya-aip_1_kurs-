@@ -2,7 +2,7 @@
 #define platinum_client_hpp
 
 #include <string>
-#include "client (2).hpp"
+#include "client.hpp"
 using namespace std;
 
 class PlatinumClient : public Client{

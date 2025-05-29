@@ -2,7 +2,7 @@
 #define client_node_hpp
 
 #include <memory> // для shared_ptr
-#include "client (2).hpp"
+#include "client.hpp"
 using namespace std;
 
 class ClientNode {
