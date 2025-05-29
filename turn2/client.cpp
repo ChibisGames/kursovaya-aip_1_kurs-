@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "wallet.hpp"
+#include "wallet.cpp"
 //#include "standard_client.hpp"
 //#include "gold_client.hpp"
 //#include "platinum_client.hpp"

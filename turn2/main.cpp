@@ -2,10 +2,11 @@
 #include <iostream>
 #include <memory> // Required for make_shared, even if using namespace std;
 #include "blockchain.hpp"
+#include "blockchain.cpp"
 #include "client.hpp"
-//#include "platinum_client.hpp"
-//#include "standard_client.hpp"
+#include "client.cpp"
 #include "wallet.hpp"
+#include "wallet.cpp"
 
 using namespace std; 
 
