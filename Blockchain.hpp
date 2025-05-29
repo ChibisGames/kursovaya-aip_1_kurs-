@@ -42,5 +42,6 @@ public:
     void loadClientsFromFile(const string& filename);
     void saveTransactionsToFile(const string& filename) const;
     void loadTransactionsFromFile(const string& filename);
+    bool removeTransaction(const Transaction& tx);
 };
 #endif

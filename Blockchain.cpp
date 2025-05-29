@@ -12,6 +12,10 @@ Blockchain::Blockchain() {}
 
 Blockchain::~Blockchain() {}
 
+bool Blockchain::removeTransaction(const Transaction& tx) {
+    return transactions.removeTransaction(tx.getId());
+}
+
 void Blockchain::addClient(shared_ptr<Client> client) {
     clients.insert(client);
 }
