@@ -1,64 +1,149 @@
-
 #include <iostream>
-#include <memory> // Required for make_shared, even if using namespace std;
+#include <memory>
+#include <limits>
 #include "Blockchain.hpp"
 #include "gold_client.hpp"
 #include "platinum_client.hpp"
 #include "standard_client.hpp"
 #include "wallet.hpp"
 
-using namespace std; 
+using namespace std;
 
+void addNewClient(Blockchain& blockchain) {
+    string clientId, clientName;
+    char clientType;
+    double initialBalance;
+
+    cout << "\n--- Adding New Client ---" << endl;
+
+    // Ввод ID клиента с проверкой на существование
+    while (true) {
+        cout << "Enter client ID: ";
+        cin >> clientId;
+        if (blockchain.findClient(clientId)) {
+            cout << "Error: Client with ID '" << clientId << "' already exists. Try another ID." << endl;
+        } else {
+            break;
+        }
+    }
+
+    // Ввод имени клиента
+    cout << "Enter client name: ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    getline(cin, clientName);
+
+    // Выбор типа клиента
+    while (true) {
+        cout << "Select client type (G - Gold, P - Platinum, S - Standard): ";
+        cin >> clientType;
+        clientType = toupper(clientType);
+        if (clientType == 'G' || clientType == 'P' || clientType == 'S') {
+            break;
+        }
+        cout << "Invalid client type. Please try again." << endl;
+    }
+
+    // Ввод начального баланса
+    cout << "Enter initial wallet balance: ";
+    while (!(cin >> initialBalance) || initialBalance < 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid amount. Please enter a positive number: ";
+    }
+
+    // Создание клиента и кошелька
+    shared_ptr<Client> newClient;
+    string walletId = "w1_" + clientId;
+
+    switch (clientType) {
+        case 'G':
+            newClient = make_shared<GoldClient>(clientId, clientName);
+            break;
+        case 'P':
+            newClient = make_shared<PlatinumClient>(clientId, clientName);
+            break;
+        case 'S':
+            newClient = make_shared<StandardClient>(clientId, clientName);
+            break;
+    }
+
+    newClient->addWallet(make_shared<Wallet>(walletId, clientId, initialBalance));
+    blockchain.addClient(newClient);
+
+    cout << "Client '" << clientName << "' (ID: " << clientId << ") added successfully!" << endl;
+}
+
+void displayMenu() {
+    cout << "\n--- Blockchain Client Management ---" << endl;
+    cout << "1. Add new client" << endl;
+    cout << "2. Display all clients" << endl;
+    cout << "3. Display all transactions" << endl;
+    cout << "4. Process a transaction" << endl;
+    cout << "5. Save and exit" << endl;
+    cout << "-----------------------------------" << endl;
+    cout << "Enter your choice (1-5): ";
+}
 
 int main() {
     Blockchain blockchain;
 
-    // Load data from files
+    // Загрузка данных из файлов
     blockchain.loadClientsFromFile("Clients.txt");
     blockchain.loadTransactionsFromFile("Blockchain_transactions.txt");
 
-    
-    if (!blockchain.findClient("gold1")) {
-        auto newClient = make_shared<GoldClient>("gold1", "Alice");
-        newClient->addWallet(make_shared<Wallet>("w1_alice", "gold1", 15000.0));
-        blockchain.addClient(newClient);
-    }
+    int choice;
+    bool running = true;
 
-    if (!blockchain.findClient("plat1")) {
-        auto newClient = make_shared<PlatinumClient>("plat1", "Bob");
-        newClient->addWallet(make_shared<Wallet>("w1_bob", "plat1", 7500.0));
-        blockchain.addClient(newClient);
-    }
+    while (running) {
+        displayMenu();
+        cin >> choice;
 
-    // This block is slightly more robust for adding client and then their wallet
-    shared_ptr<Client> charlieClient = blockchain.findClient("std1");
-    if (charlieClient == nullptr) {
-        charlieClient = make_shared<StandardClient>("std1", "Charlie");
-        blockchain.addClient(charlieClient);
-        // Now that the client is added, ensure we get the shared_ptr back for consistency
-        charlieClient = blockchain.findClient("std1");
-        if (charlieClient) { // Ensure it was actually added and found
-            charlieClient->addWallet(make_shared<Wallet>("w1_charlie", "std1", 200.0));
+        switch (choice) {
+            case 1: // Добавление нового клиента
+                addNewClient(blockchain);
+                break;
+                
+            case 2: // Просмотр всех клиентов
+                blockchain.displayClients();
+                break;
+                
+            case 3: // Просмотр всех транзакций
+                blockchain.displayTransactions();
+                break;
+                
+            case 4: { // Обработка транзакции
+                string senderId, senderWallet, receiverId, receiverWallet;
+                double amount;
+                
+                cout << "\n--- Process Transaction ---" << endl;
+                cout << "Enter sender client ID: ";
+                cin >> senderId;
+                cout << "Enter sender wallet ID: ";
+                cin >> senderWallet;
+                cout << "Enter receiver client ID: ";
+                cin >> receiverId;
+                cout << "Enter receiver wallet ID: ";
+                cin >> receiverWallet;
+                cout << "Enter amount: ";
+                cin >> amount;
+                
+                blockchain.processTransaction(senderId, senderWallet, receiverId, receiverWallet, amount);
+                break;
+            }
+                
+            case 5: // Сохранение и выход
+                blockchain.saveClientsToFile("Clients.txt");
+                blockchain.saveTransactionsToFile("Blockchain_transactions.txt");
+                running = false;
+                cout << "Data saved. Exiting..." << endl;
+                break;
+                
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     }
-
-
-    blockchain.displayClients();
-    blockchain.displayTransactions();
-
-    blockchain.processTransaction("gold1", "w1_alice", "plat1", "w1_bob", 1000.0);
-    // This transaction targets "w2_alice" which likely doesn't exist, leading to an error.
-    // Ensure "w2_alice" is added to the "gold1" client if you want this to succeed.
-    // For demonstration, I'll keep it as is, but be aware of the potential error.
-    blockchain.processTransaction("std1", "w1_charlie", "gold1", "w2_alice", 50.0);
-    blockchain.processTransaction("gold1", "w1_alice", "plat1", "w1_bob", 12000.0); // Exceeds limit
-
-    blockchain.displayClients();
-    blockchain.displayTransactions();
-
-    // Save data to files
-    blockchain.saveClientsToFile("Clients.txt");
-    blockchain.saveTransactionsToFile("Blockchain_transactions.txt");
 
     return 0;
 }
